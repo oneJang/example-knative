@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: event-sender
+  namespace: replay
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: event-writer
+  namespace: default
+rules:
+- apiGroups: ["eventing.knative.dev"]
+  resources: ["brokers"]
+  verbs: ["get", "list", "watch", "create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: event-writer-binding
+  namespace: default
+subjects:
+- kind: ServiceAccount
+  name: event-sender
+  namespace: replay
+roleRef:
+  kind: Role
+  name: event-writer
+  apiGroup: rbac.authorization.k8s.io

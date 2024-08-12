@@ -1,0 +1,16 @@
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: replay-trigger
+spec:
+  broker: default
+  filter:
+   attributes:
+     type: com.video.replay.requested
+  subscriber:
+          #ref:
+          #apiVersion: serving.knative.dev/v1
+          #kind: Service
+          #name: replay-service
+          #namespace: replay
+    uri: http://replay-service.replay.192.168.10.107.nip.io

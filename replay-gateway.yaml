@@ -1,0 +1,43 @@
+apiVersion: networking.istio.io/v1beta1
+kind: Gateway
+metadata:
+  name: replay-gateway
+  namespace: replay
+spec:
+  selector:
+    istio: ingressgateway
+  servers:
+  - hosts:
+    - '*'
+    port:
+      name: http
+      number: 80
+      protocol: HTTP
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: replay-virtualservice
+  namespace: replay
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - replay-gateway
+  #http:
+  #- headers:
+  #    request:
+  #      set:
+  #        K-Network-Hash: 0b5c14fa8f982c9eff139aa17c0fcb2bf6ac9c16619cebc26ecab7f1cdda8817
+  http:
+  - match:
+    - uri:
+        prefix: /replay
+    route:
+    - destination:
+       #port:
+         #number: 80 # can be omitted if it's the only port for reviews
+        #host: webhooksource-webhook-00001-private.default
+        #host: webhooksource-replay-webhook.replay.svc.cluster.local
+        host: webhooksource-replay-webhook.replay
+
